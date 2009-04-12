@@ -1,0 +1,12 @@
+My new blog that runs off of my turbine engine I am working on.
+
+You just post (or put) a block of text to it and it figures out the subclass of PostType that you are trying to make.
+
+I will write more here if/when I get this thing more fully finished.
+
+If you want to play, you can do:
+
+> irb -r blog.rb
+> thin -R config.ru start
+
+Sinatra is sooooo ruby like, it's awesome.
