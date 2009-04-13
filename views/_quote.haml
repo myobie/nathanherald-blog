@@ -1,0 +1,6 @@
+- unless post.g?(:source)
+  %p
+    %strong Source:
+    = post.g(:source)
+
+%blockquote= post.g(:quote)

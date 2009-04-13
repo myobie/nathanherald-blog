@@ -1,0 +1,7 @@
+- unless post.g?(:title)
+  %h2= post.g(:title)
+
+%p
+  %a{:href=>post.g(:url)}= post.g(:title) || post.g(:url)
+
+= post.g(:description)

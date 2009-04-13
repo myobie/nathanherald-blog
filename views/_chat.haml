@@ -1,0 +1,5 @@
+%ol
+  - post.g(:transcript).each do |line|
+    %li
+      %strong= line.keys.first
+      = line.values.first

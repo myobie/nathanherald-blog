@@ -1,0 +1,10 @@
+- unless post.g?(:title)
+  %h2= post.g(:title)
+
+- unless post.g?(:category)
+  %p.category= "<strong>Category:</strong> #{post.g(:category)}"
+
+- unless post.g?(:tags)
+  %p.tags= post.g(:tags).sort.join(", ")
+
+= post.g(:body)
