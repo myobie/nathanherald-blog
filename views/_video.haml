@@ -1,10 +1,10 @@
-- unless post.g?(:title)
+- unless post.b?(:title)
   %h2= post.g(:title)
 
-- unless post.g?(:embed)
+- unless post.b?(:embed)
   .embed= post.g(:embed)
-  
-%p
-  %a{:href=>post.g(:video_url)}= post.g(:video_url)
+- else
+  %p
+    %a{:href=>post.g(:video_url)}= post.g(:video_url)
 
 = post.g(:description)

@@ -1,10 +1,9 @@
-- unless post.g?(:title)
+- unless post.b?(:title)
   %h2= post.g(:title)
 
-- unless post.g?(:category)
-  %p.category= "<strong>Category:</strong> #{post.g(:category)}"
-
-- unless post.g?(:tags)
-  %p.tags= post.g(:tags).sort.join(", ")
+- unless post.b?(:category)
+  %p.category
+    Category:
+    = post.g(:category)
 
 = post.g(:body)

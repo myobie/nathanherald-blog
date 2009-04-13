@@ -1,4 +1,3 @@
-* Make a Hash & Yaml importer to go along with the json one (-core)
 * Make the UI actually output the articles
 * Make a new/edit page. Make the edit page show a delete button.
 * Move the db config out into a file (yaml? i kinda like the string way)

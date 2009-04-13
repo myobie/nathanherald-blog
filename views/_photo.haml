@@ -1,7 +1,4 @@
-- unless post.g?(:embed)
-  .embed= post.g(:embed)
-  
 %p
-  %a{:href=>post.g(:photo_url)}= post.g(:photo_url)
+  %img{:src=>post.g(:photo_url)}
 
 = post.g(:caption)

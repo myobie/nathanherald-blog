@@ -3,6 +3,7 @@ require "sinatra/base"
 # gem "nakajima-rack-flash"
 # require "rack-flash"
 require "haml"
+require 'pony'
 
 gem "myobie-turbine-core"
 # gem "turbine-core"
@@ -52,7 +53,7 @@ class Post
     content_object.get_attr(attr_name.to_sym)
   end
   
-  def g?(attr_name)
+  def b?(attr_name)
     content_object.get_attr?(attr_name.to_sym)
   end
   
@@ -111,9 +112,12 @@ end
 
 # Our Sinatra App
 class Blog < Sinatra::Base
-  set :haml, {:format => :html5 }
-  
-  include Rack::Utils
+  enable :methodoverride, :static
+  disable :sessions
+  set :haml, { :format => :html5 }
+  set :logging, Proc.new { ! test? }
+  set :app_file, __FILE__
+  set :reload, Proc.new { development? }
   alias_method :h, :escape_html
   
   # helpers
@@ -123,9 +127,16 @@ class Blog < Sinatra::Base
   end
   
   def relative_time(time)
-    days_ago = (Time.now - time).to_i / (60*60*24)
+    days_ago = (Time.now - time.to_time).to_i / (60*60*24)
     days_ago = 0 if days_ago < 0
-    "#{days_ago} day#{'s' if days_ago != 1} ago"
+    
+    if days_ago == 0
+      "today"
+    elsif days_ago == 1
+      "yesterday"
+    else
+      "#{days_ago} day#{'s' if days_ago != 1} ago"
+    end
   end
   
   def render_post(post)
@@ -160,54 +171,27 @@ class Blog < Sinatra::Base
   
   # use Rack::Flash, :accessorize => true
   
-  # Layout
-  
-  layout do
-    %Q{
-      !!!
-      %html
-        %head
-          %title nathanherald.com
-          %link{:href=>"/feed", :type=>"application/rss+xml", :rel=>"alternate", :title=>"RSS Feed"}
-        %body
-          = yield
-    }.indents
-  end
-  
   # Routes
-  get '/' do
-    # show the homepage, maybe the five newest or something
-    @posts = Post.all :limit => 5, :order => [:created_at.desc]
-    
-    haml %Q{
-      #posts
-        - @posts.each do |post|
-          .post{:class=>post.object_class.downcase}
-            = render_post post
-    }.indents
-  end
+  %w(/ /posts/?).each do |path|
+    get path do
+      # show the homepage, maybe the five newest or something
+      DataMapper.repository do
+        @posts = Post.all :limit => 5, :order => [:created_at.desc]
+        body haml(:home)
+      end#repository
+    end#get
+  end#each
   
-  get '/posts/?' do
+  get '/archive/?' do
     # list all posts
     @posts = Post.all :order => [:created_at.desc]
-    haml %Q{
-      #posts
-        - @posts.each do |post|
-          .post{:class=>post.object_class.downcase}[post]
-            = render_post post
-    }.indents
+    haml :archive
   end
   
   get '/posts/new' do
     ensure_authenticated
     # show a new form
-    haml %Q{
-      %form.post#new-post{:action=>'/posts', :method=>'post'}
-        %p
-          %textarea{:name=>'post', :id=>'post', :rows=>20, :cols=>40}
-        %p
-          %button{:type=>'submit'} Create
-    }.indents
+    haml :new
   end
   
   post '/posts/?' do
@@ -222,10 +206,7 @@ class Blog < Sinatra::Base
     # show the post for that id (or it could be a slug)
     @post = Post.get(params[:id])
     @post = Post.first(:slug => params[:id]) if @post.blank?
-    haml %Q{
-      .post{:class=>@post.object_class.downcase}
-        = render_post @post
-    }.indents
+    haml :show
   end
   
   get '/posts/:id/edit/?' do
@@ -233,18 +214,7 @@ class Blog < Sinatra::Base
     # show an edit form
     @post = Post.get(params[:id])
     @post = Post.first(:slug => params[:id]) if @post.blank?
-    haml %Q{
-      %form.post#edit-post{:action=>'/posts/#{@post.id}', :method=>'post'}
-        %input{:type=>'hidden', :name=>'_method', :value=>'PUT'}
-        %p
-          %textarea{:name=>'post', :id=>'post', :rows=>20, :cols=>40}~ @post.g(:__original)
-        %p
-          %button{:type=>'submit'} Update
-      
-      %form.post#delete-post{:action=>'/posts/#{@post.id}', :method=>'post'}
-        %input{:type=>'hidden', :name=>'_method', :value=>'delete'}
-        %button{:type=>'submit'} Delete this post
-    }.indents
+    haml :edit
   end
   
   post '/posts/:id/?' do
@@ -269,29 +239,27 @@ class Blog < Sinatra::Base
   
   get '/feed/?' do
     # make an rss feed of the last 30 posts
-    @posts = Post.all :limit => 30, :order => [:created_at.desc]
-    
-    haml %Q{
-      <?xml version="1.0" encoding="UTF-8"?>
-      %rss{:version=>"2.0", "xmlns:atom"=>"http://www.w3.org/2005/Atom"}
-        %channel
-          %link http://nathanherald.com
-          %atom:link{:type=>"application/rss+xml", :href=>"http://nathanherald.com/feed", :rel=>"self"}
-          %title nathanherald.com
-          %description nathanherald.com
-          %language en-us
-
-          - @posts.each do |post|
-            %item
-              %pubDate= post.created_at.to_s
-              %guid= post.url
-              %link= post.url
-              %title= post.title
-              %description
-                <![CDATA[
-                = post.description
-                ]]>
-    }.indents, :layout => false
+    DataMapper.repository do
+      @posts = Post.all :limit => 30, :order => [:created_at.desc]
+      body haml(:feed, :layout => false)
+    end#repository
+  end
+  
+  ### other pages
+  %w(about contact thankyou).each do |path|
+    get "/#{path}/?" do
+      haml path.to_sym
+    end
+  end
+  
+  post '/contact/?' do
+    Pony.mail({
+      :to => 'myobie@mac.com', 
+      :from => 'contact@nathanherald.com', 
+      :subject => 'Contact From from nathanherald.com', 
+      :body => [params[:name], params[:email], params[:message]].join("\n\n")
+    })
+    redirect '/thankyou'
   end
   
 end

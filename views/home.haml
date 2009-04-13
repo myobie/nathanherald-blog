@@ -1,0 +1,5 @@
+#posts
+  - @posts.each do |post|
+    .post{:class=>post.object_class.downcase}
+      .date= relative_time post.created_at
+      .post-content= render_post post

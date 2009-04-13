@@ -1,0 +1,36 @@
+!!!
+%html
+  %head
+    %title= "nathanherald.com #{@title ? " | " + @title : ""}"
+    %link{:href=>"/feed", :type=>"application/rss+xml", :rel=>"alternate", :title=>"RSS Feed"}
+    %link{:href=>"/master.css", :type=>"text/css", :media=>"screen", :rel=>"stylesheet"}
+  %body
+    #header
+      .before
+        %a{:href=>"#main"} Skip To Content
+        
+      #nav
+        %ul
+          %li
+            %a{:href=>"/"} Home
+          %li
+            %a{:href=>"/archive"} Archive
+          %li
+            %a{:href=>"/about"} About
+          %li
+            %a{:href=>"/contact"} Contact
+          %li
+            %a{:href=>"/feed"} Feed
+          %li.search
+            %form
+              %label{:for=>"q"} Search
+              %input{:type=>"search", :name=>"q", :id=>"q"}
+      
+      %h1 Nathan Herald
+        
+      %p.slogan I am a designer, husband, and nerd.
+    
+    #main= yield
+    
+    %script{:src=>"jquery.js"}
+    %script{:src=>"application.js"}

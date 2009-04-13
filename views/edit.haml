@@ -1,0 +1,10 @@
+%form.post#edit-post{:action=>"/posts/#{@post.id}", :method=>'post'}
+  %input{:type=>'hidden', :name=>'_method', :value=>'put'}
+  %p
+    %textarea{:name=>'post', :id=>'post', :rows=>20, :cols=>40}~ @post.g(:__original)
+  %p
+    %button{:type=>'submit'} Update
+
+%form.post#delete-post{:action=>"/posts/#{@post.id}", :method=>'post'}
+  %input{:type=>'hidden', :name=>'_method', :value=>'delete'}
+  %button{:type=>'submit'} Delete this post

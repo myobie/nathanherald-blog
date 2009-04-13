@@ -1,0 +1,19 @@
+%h2 Contact
+
+%p Do you have something to say?
+
+%form#contact{:action=>"/contact", :method=>'post'}
+  %p
+    %label{:for=>'name'} Your name:
+    %input{:type=>'text', :name=>'name', :id=>'name'}
+  
+  %p
+    %label{:for=>'email'} Your email address:
+    %input{:type=>'text', :name=>'email', :id=>'email'}
+  
+  %p
+    %label{:for=>'message'} Your message:
+    %textarea{:name=>'message', :id=>'message'}
+  
+  %p
+    %button{:type=>'submit'} Send message
