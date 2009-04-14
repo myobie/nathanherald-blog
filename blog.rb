@@ -1,5 +1,19 @@
+class AppConfig
+  @@hash = {}
+  
+  def self.load(path)
+    @@hash = YAML::load(File.read("#{path}.yml"))
+  end
+  
+  def self.[](what)
+    @@hash[what]
+  end
+end
+
+AppConfig.load "config"
+
 if ENV['RACK_ENV'] == 'production'
-  ENV['GEM_PATH'] = '/home/nathanherald/.gems'
+  ENV['GEM_PATH'] = AppConfig[:production_gems_path]
 end
 
 require "rubygems"
@@ -15,19 +29,7 @@ require "turbine-core"
 
 PostType.preferred_order = [Video, Audio, Photo, Chat, Review, Quote, Link, Article]
 
-class AppConfig
-  @@hash = {}
-  
-  def self.load(path)
-    @@hash = YAML::load(File.read("#{path}.yml"))
-  end
-  
-  def self.[](what)
-    @@hash[what]
-  end
-end
 
-AppConfig.load "config"
 
 require 'model' # can only be required after the config is loaded
 
