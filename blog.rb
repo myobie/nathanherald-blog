@@ -113,6 +113,38 @@ class Blog < Sinatra::Base
     haml :archive
   end
   
+  get %r{^/([0-9]{4})/?$} do |year|
+    @posts = Post.all({
+      :created_at_year.gte => year.to_i, 
+      :created_at_year.lt => year.to_i+1,
+      :order => [:created_at.desc]
+    })
+    haml :list
+  end
+  
+  get %r{^/([0-9]{4})/([0-9]{2})/?$} do |year, month|
+    @posts = Post.all({
+      :created_at_year.gte => year.to_i, 
+      :created_at_year.lt => year.to_i+1,
+      :created_at_month.gte => month.to_i,
+      :created_at_month.lt => month.to_i+1,
+      :order => [:created_at.desc]
+    })
+    haml :list
+  end
+  
+  get %r{^/([0-9]{4})/([0-9]{2})/(.+)/?$} do |year, month, slug|
+    @post = Post.first({
+      :created_at_year.gte => year.to_i, 
+      :created_at_year.lt => year.to_i+1,
+      :created_at_month.gte => month.to_i,
+      :created_at_month.lt => month.to_i+1,
+      :slug => slug,
+      :order => [:created_at.desc]
+    })
+    haml :show
+  end
+  
   get '/posts/new/?' do
     ensure_authenticated
     # show a new form
@@ -130,38 +162,6 @@ class Blog < Sinatra::Base
   get '/posts/:id/?' do
     # show the post for that id (or it could be a slug)
     @post = Post.get(params[:id])
-    haml :show
-  end
-  
-  get %r{^/([0-9]{4})/?$} do |year|
-    @posts = Post.all({
-      :created_at_year.gte => year.to_i, 
-      :created_at_year.lt => year.to_i+1,
-      :order => [:created_at.desc]
-    })
-    haml :home
-  end
-  
-  get %r{^/([0-9]{4})/([0-9]{2})/?$} do |year, month|
-    @posts = Post.all({
-      :created_at_year.gte => year.to_i, 
-      :created_at_year.lt => year.to_i+1,
-      :created_at_month.gte => month.to_i,
-      :created_at_month.lt => month.to_i+1,
-      :order => [:created_at.desc]
-    })
-    haml :home
-  end
-  
-  get %r{^/([0-9]{4})/([0-9]{2})/(.+)/?$} do |year, month, slug|
-    @post = Post.first({
-      :created_at_year.gte => year.to_i, 
-      :created_at_year.lt => year.to_i+1,
-      :created_at_month.gte => month.to_i,
-      :created_at_month.lt => month.to_i+1,
-      :slug => slug,
-      :order => [:created_at.desc]
-    })
     haml :show
   end
   
@@ -209,9 +209,9 @@ class Blog < Sinatra::Base
   
   post '/contact/?' do
     Pony.mail({
-      :to => 'me@nathanherald.com', 
-      :from => 'contact@nathanherald.com', 
-      :subject => 'Contact From from nathanherald.com', 
+      :to => AppConfig[:mail][:to], 
+      :from => AppConfig[:mail][:from], 
+      :subject => AppConfig[:mail][:subject], 
       :body => [params[:name], params[:email], params[:message]].join("\n\n")
     })
     redirect '/thankyou'

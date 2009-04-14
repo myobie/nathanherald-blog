@@ -76,7 +76,7 @@ p.slogan {
 }
 
 .post {
-  padding: 25px 10px 10px;
+  padding: 25px 10px 15px;
   width: 430px;
   border-bottom: 1px dotted #ddd;
   position: relative;
@@ -111,4 +111,12 @@ blockquote {
 blockquote p:before {
   content: "> ";
   display: inline;
+}
+
+/* PostTypes */
+
+.chat ol {
+  list-style-type: none;
+  margin: 0 0 1em;
+  padding: 0;
 }

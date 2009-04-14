@@ -38,11 +38,11 @@ class Post
   end
   
   def title
-    content_object.get_attr(:title) || ""
+    content_object.get_attr(:title) || nil
   end
   
   def description
-    content_object.get_attr(:body) || ""
+    content_object.get_attr(:body) || nil
   end
   
   def g(attr_name)
@@ -50,6 +50,10 @@ class Post
   end
   
   def b?(attr_name)
+    content_object.blank_attr?(attr_name.to_sym)
+  end
+  
+  def g?(attr_name)
     content_object.get_attr?(attr_name.to_sym)
   end
   

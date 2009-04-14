@@ -2,3 +2,7 @@
 :domain: domain.com
 :username: admin
 :password: pass
+:mail:
+  :to: someone@someone.com
+  :from: contact@domain.com
+  :subject: Contact form filled out on domain.com

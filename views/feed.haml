@@ -12,8 +12,8 @@
         %pubDate= post.created_at.to_s
         %guid= post.url
         %link= post.url
-        %title= post.title
+        %title= post.title || "No Title"
         %description
           <![CDATA[
-          = post.description
+          = post.description || post.content_object.to_s
           ]]>
