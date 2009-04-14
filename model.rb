@@ -14,6 +14,14 @@ class Fixnum
   end
 end
 
+# Add a truncate_words to string
+class String
+  def truncate_words(words = 30, end_string = " ...")
+    words = self.split()
+    words[0..(length-1)].join(' ') + (words.length > length ? end_string : '')
+  end
+end
+
 # Models
 class Post
   include DataMapper::Resource
@@ -48,11 +56,17 @@ class Post
   end
   
   def title
-    content_object.get_attr(:title) || nil
+    if !content_object.class.heading_field.blank? && content_object.get_attr?(content_object.class.heading_field)
+      content_object.get_attr(content_object.class.heading_field).truncate_words
+    elsif !content_object.class.required_fields_list.blank?
+      content_object.class.required_fields_list.map { |f| content_object.get_attr(f) }.join(" | ").truncate_words
+    else
+      "No Title"
+    end
   end
   
   def description
-    content_object.get_attr(:body) || nil
+    Markdown.new(content_object.to_s).to_html
   end
   
   def g(attr_name)

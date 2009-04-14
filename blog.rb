@@ -1,3 +1,5 @@
+ENV['GEM_PATH'] = '/home/nathanherald/.gems:/usr/lib/ruby/gems/1.8'
+
 require "rubygems"
 require "sinatra/base"
 gem "nakajima-rack-flash"
@@ -5,8 +7,8 @@ require "rack-flash"
 require "haml"
 require 'pony'
 require 'extlib'
-# gem "myobie-turbine-core"
-gem "turbine-core"
+gem "myobie-turbine-core"
+# gem "turbine-core"
 require "turbine-core"
 
 PostType.preferred_order = [Video, Audio, Photo, Chat, Review, Quote, Link, Article]
