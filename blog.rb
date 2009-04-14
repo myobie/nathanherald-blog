@@ -73,22 +73,12 @@ class Blog < Sinatra::Base
   end
   
   def months
-    @months ||= years.length < 2 ? months_from_same_year : months_from_different_years
-  end#months
-  
-  def months_from_same_year
-    @mys ||= (oldest_post.created_at_month..Time.now.month).to_a.map { |month| 
-      [month, oldest_post.created_at_year] 
-    }
-  end
-  
-  def months_from_different_years
-    @mys ||= years.map { |year| 
+    @months ||= years.map { |year| 
       s = year == oldest_post.created_at_year ? oldest_post.created_at_month : 1
       e = year == Time.now.year ? Time.now.month : 12
       (s..e).to_a.map { |month| [month, year] }
     }.inject([]) { |sum, year| sum + year }
-  end
+  end#months
   
   def years
     @years ||= (oldest_post.created_at_year..Time.now.year).to_a
