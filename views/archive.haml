@@ -1,4 +1,3 @@
-#posts
-  - @posts.each do |post|
-    .post{:class=>post.object_class.downcase}[post]
-      = render_post post
+%h2.archive All posts
+
+= partial :posts, :locals => { :posts => @posts }

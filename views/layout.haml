@@ -3,7 +3,7 @@
   %head
     %title= "nathanherald.com #{@title ? " | " + @title : ""}"
     %link{:href=>"/feed", :type=>"application/rss+xml", :rel=>"alternate", :title=>"RSS Feed"}
-    /%link{:href=>"/master.css", :type=>"text/css", :media=>"screen", :rel=>"stylesheet"}
+    %link{:href=>"/master.css", :type=>"text/css", :media=>"screen", :rel=>"stylesheet"}
   %body
     #header
       .before
@@ -27,10 +27,17 @@
               %input{:type=>"search", :name=>"q", :id=>"q"}
       
       %h1 Nathan Herald
-        
       %p.slogan I am a designer, husband, and nerd.
     
     #main= yield
     
-    /%script{:src=>"jquery.js"}
-    /%script{:src=>"application.js"}
+    #sidebar
+      %ol#archives
+        - months.each do |month, year|
+          %li
+            %a{:href=>"/#{year}/#{month.two_digits}"}
+              = Date::MONTHNAMES[month]
+              = year
+    
+    %script{:src=>"/jquery.js"}
+    %script{:src=>"/application.js"}
