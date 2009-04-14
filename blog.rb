@@ -1,4 +1,6 @@
-ENV['GEM_PATH'] = '/home/nathanherald/.gems:/usr/lib/ruby/gems/1.8'
+if ENV['RACK_ENV'] == 'production'
+  ENV['GEM_PATH'] = '/home/nathanherald/.gems'
+end
 
 require "rubygems"
 require "sinatra/base"
