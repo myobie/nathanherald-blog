@@ -1,10 +1,7 @@
-- unless post.b?(:title)
-  %h2= post.g(:title)
-
 - unless post.b?(:embed)
   .embed= post.g(:embed)
-- else
-  %p
-    %a{:href=>post.g(:audio_url)}= post.g(:audio_url)
+
+%p.url
+  %a{:href=>post.g(:audio_url)}= post.g(:audio_url)
 
 = post.g(:description)

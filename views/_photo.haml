@@ -1,4 +1,8 @@
 %p
-  %img{:src=>post.g(:photo_url)}
+  - if post.g?(:url)
+    %a{:href=>post.g(:url)}
+      %img{:src=>post.g(:photo_url)}
+  - else
+    %img{:src=>post.g(:photo_url)}
 
 = post.g(:caption)

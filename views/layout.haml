@@ -3,7 +3,7 @@
   %head
     %title= "nathanherald.com #{@title ? " | " + @title : ""}"
     %link{:href=>"/feed", :type=>"application/rss+xml", :rel=>"alternate", :title=>"RSS Feed"}
-    %link{:href=>"/master.css", :type=>"text/css", :media=>"screen", :rel=>"stylesheet"}
+    /%link{:href=>"/master.css", :type=>"text/css", :media=>"screen", :rel=>"stylesheet"}
   %body
     #header
       .before
@@ -32,5 +32,5 @@
     
     #main= yield
     
-    %script{:src=>"jquery.js"}
-    %script{:src=>"application.js"}
+    /%script{:src=>"jquery.js"}
+    /%script{:src=>"application.js"}

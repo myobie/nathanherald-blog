@@ -1,4 +1,8 @@
-%h2= post.g(:item)
+%h2
+  - if post.g?(:url)
+    %a{:href=>post.g(:url)}= post.g(:item)
+  - else
+    = post.g(:item)
   
 %p
   Rating:
