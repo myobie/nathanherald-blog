@@ -25,24 +25,25 @@ body {
 #nav ul {
   list-style-type: none;
   height: 2.7em;
-  margin: 0 0 0 100px;
+  margin: 0 0 0 90px;
   padding: 2px 0 0;
 }
 
 #nav li {
   display: inline;
-  margin-right: 2em;
+  margin-right: 1em;
   line-height: 2.7em;
 }
 
 #nav li a {
   color: #ccc;
   text-decoration: none;
+  padding: 5px 10px;
 }
 
 #nav li a:hover {
-  text-decoration: underline;
-  color: #eee;
+  color: #333;
+  background: #ccc;
 }
 
 #nav li form {
@@ -58,21 +59,24 @@ body {
 }
 
 h1 {
-  margin: 1em 0 0 100px;
-  font-size: 28px;
-  font-weight: bold;
+  margin: 0;
+  text-indent: -9999px;
   line-height: 1;
-  color: #333;
+  background: url(my-name.gif) no-repeat left top;
+  width: 812px;
+  height: 400px;
 }
 
 p.slogan {
-  margin: 0 0 1em 100px;
-  color: #333;
+  position: absolute;
+  top: -9999px;
+  left: -9999px;
 }
 
 #main {
   margin: 2em 0 2em 100px;
   width: 450px;
+  float: left;
 }
 
 .post {
@@ -103,6 +107,15 @@ h2 {
   font-weight: bold;
 }
 
+a {
+  color: #333;
+  text-decoration: none;
+}
+
+a:hover {
+  text-decoration: underline;
+}
+
 blockquote {
   margin: 0;
   padding: 0;
@@ -113,10 +126,90 @@ blockquote p:before {
   display: inline;
 }
 
+p.more {
+  margin: 1.5em 0;
+  font-weight: bold;
+}
+
+p.more a span {
+  position: relative;
+  top: 2px;
+  font-size: 14px;
+}
+
 /* PostTypes */
 
 .chat ol {
   list-style-type: none;
   margin: 0 0 1em;
   padding: 0;
+}
+
+/* Sidebar */
+
+#sidebar {
+  float: left;
+  margin: 70px 0 0 40px;
+  padding: 10px;
+  border-left: 1px dotted #eee;
+}
+
+#sidebar ol {
+  list-style-type: none;
+  margin: 0;
+  padding: 0;
+  width: 150px;
+}
+
+#sidebar ol li {
+  position: relative;
+  background: #fbfbfb;
+  width: ;
+}
+
+#sidebar ol li a {
+  padding: 5px 10px;
+  display: block;
+  width: 130px;
+  color: #000;
+  text-decoration: none;
+  z-index: 99;
+  position: relative;
+}
+
+#sidebar ol li a:hover {
+  background: #333;
+  color: #eee;
+}
+
+#sidebar ol li a .count {
+  position: absolute;
+  right: 10px;
+  top: 5px;
+  z-index: 99;
+}
+
+#sidebar ol li span.index {
+  position: absolute;
+  top: 0;
+  left: 0;
+  background: #e5e5e5;
+  display: block;
+  height: 100%;
+}
+
+/* Contact Form */
+
+#contact label {
+  display: block;
+}
+
+#contact input {
+  width: 300px;
+}
+
+#contact textarea {
+  width: 30em;
+  height: 12em;
+  font: 14px "Courier New", Courier, mono;
 }

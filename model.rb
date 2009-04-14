@@ -1,6 +1,7 @@
 require "dm-core"
 require "dm-timestamps"
 require "dm-types"
+require "dm-aggregates"
 
 # setup datamapper
 DataMapper.setup(:default, AppConfig[:database])
@@ -24,10 +25,19 @@ class Post
   property :status,           String
   property :object_class,     String, :length => 100
   property :content,          Yaml
-  property :created_at_month, Integer
-  property :created_at_year,  Integer
+  property :created_at_month, Integer, :index => true
+  property :created_at_year,  Integer, :index => true
   property :created_at,       DateTime
   property :updated_at,       DateTime
+  
+  def self.my_count(month, year)
+    count({
+      :created_at_year.gte => year.to_i, 
+      :created_at_year.lt => year.to_i+1,
+      :created_at_month.gte => month.to_i,
+      :created_at_month.lt => month.to_i+1
+    })
+  end
   
   def url
     "http://#{AppConfig[:domain]}#{path}"

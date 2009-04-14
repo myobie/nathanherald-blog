@@ -22,7 +22,7 @@
           %li
             %a{:href=>"/feed"} Feed
           %li.search
-            %form
+            %form{:action=>"/search"}
               %label{:for=>"q"} Search
               %input{:type=>"search", :name=>"q", :id=>"q"}
       
@@ -35,9 +35,11 @@
       %ol#archives
         - months.each do |month, year|
           %li
+            - c = Post.my_count(month, year)
             %a{:href=>"/#{year}/#{month.two_digits}"}
-              = Date::MONTHNAMES[month]
-              = year
+              = "#{Date::MONTHNAMES[month]} #{year}"
+              %span.count= "(#{c})"
+            %span.index{:style=>"width:#{perc_of_month(c)}%"}
     
     %script{:src=>"/jquery.js"}
     %script{:src=>"/application.js"}

@@ -1,5 +1,6 @@
 :database: "sqlite3:///./blog.db"
 :domain: domain.com
+:max_posts_per_month: 10
 :username: admin
 :password: pass
 :mail:

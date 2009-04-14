@@ -1,4 +1,4 @@
 .post{:class=>post.object_class.downcase}
   .date
-    %a{:href=>post.path}= relative_time post.created_at
+    %a{:href=>post.path}= post.created_at.strftime("%e %b")
   .post-content= render_post post

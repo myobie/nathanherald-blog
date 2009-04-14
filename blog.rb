@@ -9,7 +9,7 @@ require 'extlib'
 gem "turbine-core"
 require "turbine-core"
 
-PostType.preferred_order = [Video, Audio, Photo, Chat, Review, Link, Quote, Article]
+PostType.preferred_order = [Video, Audio, Photo, Chat, Review, Quote, Link, Article]
 
 class AppConfig
   @@hash = {}
@@ -82,6 +82,10 @@ class Blog < Sinatra::Base
   
   def years
     @years ||= (oldest_post.created_at_year..Time.now.year).to_a
+  end
+  
+  def perc_of_month(amount)
+    ((amount.to_f / AppConfig[:max_posts_per_month].to_f) * 100).floor
   end
   
   ### Authentication
