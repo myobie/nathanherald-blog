@@ -1,107 +1,31 @@
 require "rubygems"
 require "sinatra/base"
-# gem "nakajima-rack-flash"
-# require "rack-flash"
+gem "nakajima-rack-flash"
+require "rack-flash"
 require "haml"
 require 'pony'
-
-gem "myobie-turbine-core"
-# gem "turbine-core"
+require 'extlib'
+# gem "myobie-turbine-core"
+gem "turbine-core"
 require "turbine-core"
 
 PostType.preferred_order = [Video, Audio, Photo, Chat, Review, Link, Quote, Article]
 
-require "dm-core"
-require "dm-timestamps"
-require "dm-types"
-
-# setup datamapper
-DataMapper.setup(:default, "sqlite3:///#{File.dirname(__FILE__)}/blog.db")
-DataMapper::Logger.new(STDOUT, :debug) # :off, :fatal, :error, :warn, :info, :debug
-
-# Models
-class Post
-  include DataMapper::Resource
+class AppConfig
+  @@hash = {}
   
-  attr_accessor :content_object
-  
-  property :id,             Serial
-  property :slug,           String, :nullable => false, :index => true, :length => 255
-  property :status,         String
-  property :object_class,   String, :length => 100
-  property :content,        Yaml
-  property :created_at,     DateTime
-  property :updated_at,     DateTime
-  
-  def url
-    "http://nathanherald.com#{path}"
+  def self.load(path)
+    @@hash = YAML::load(File.read("#{path}.yml"))
   end
   
-  def path
-    "/posts/#{slug}"
-  end
-  
-  def title
-    content_object.get_attr(:title) || ""
-  end
-  
-  def description
-    content_object.get_attr(:body) || ""
-  end
-  
-  def g(attr_name)
-    content_object.get_attr(attr_name.to_sym)
-  end
-  
-  def b?(attr_name)
-    content_object.get_attr?(attr_name.to_sym)
-  end
-  
-  before :save do
-    self.slug = content_object.get_attr(:slug)
-    self.status = content_object.get_attr(:status)
-    self.object_class = content_object.get_attr(:type)
-    self.content = content_object.content
-  end
-  
-  def update_content!(new_content_object)
-    self.content_object = new_content_object
-    save
-  end
-  
-  def content_object
-    if @content_object.blank? && !self.object_class.blank?
-      @content_object = Kernel.const_get(self.object_class).new(self.content)
-    end
-    @content_object
-  end
-  
-  def content_object=(new_content_object)
-    case new_content_object
-    when String
-      @content_object = PostType.auto_detect(new_content_object)
-    else
-      @content_object = new_content_object
-    end
-  end
-  
-end
-
-class User
-  include DataMapper::Resource
-  
-  property :id, Serial
-  property :username, String
-  property :password, String # quick and dirty, probly should just use a yaml file instead
-end
-
-# Tell PostType how to save to the db
-class PostType
-  def send_to_storage
-    p = Post.new
-    p.update_content! self
+  def self.[](what)
+    @@hash[what]
   end
 end
+
+AppConfig.load "config"
+
+require 'model' # can only be required after the config is loaded
 
 # Extend String so we can keep our haml indented properly
 class String
@@ -112,15 +36,16 @@ end
 
 # Our Sinatra App
 class Blog < Sinatra::Base
-  enable :methodoverride, :static
-  disable :sessions
+  enable :methodoverride, :static, :sessions
   set :haml, { :format => :html5 }
   set :logging, Proc.new { ! test? }
   set :app_file, __FILE__
   set :reload, Proc.new { development? }
   alias_method :h, :escape_html
   
-  # helpers
+  use Rack::Flash, :accessorize => [:notice, :error]
+  
+  ### Helpers
   
   def partial(name, options = {})
     haml(:"_#{name}", options.merge!(:layout => false))
@@ -143,7 +68,7 @@ class Blog < Sinatra::Base
     partial post.object_class.downcase.to_sym, :locals => { :post => post }
   end
   
-  # authentication stuff
+  ### Authentication
   
   def auth
     @auth ||= Rack::Auth::Basic::Request.new(request.env)
@@ -165,22 +90,22 @@ class Blog < Sinatra::Base
   end
   
   def authorize(username, password)
-    u = User.first
-    u.username == username && u.password == password
+    AppConfig[:username] == username && AppConfig[:password] == password
   end
   
-  # use Rack::Flash, :accessorize => true
+  def logged_in?
+    auth.provided? && auth.basic? && authorize(*auth.credentials)
+  end
   
-  # Routes
-  %w(/ /posts/?).each do |path|
-    get path do
-      # show the homepage, maybe the five newest or something
-      DataMapper.repository do
-        @posts = Post.all :limit => 5, :order => [:created_at.desc]
-        body haml(:home)
-      end#repository
-    end#get
-  end#each
+  ### Routes
+  
+  get '/' do
+    # show the homepage, maybe the five newest or something
+    DataMapper.repository do
+      @posts = Post.all :limit => 5, :order => [:created_at.desc]
+      body haml(:home)
+    end#repository
+  end#get
   
   get '/archive/?' do
     # list all posts
@@ -188,7 +113,7 @@ class Blog < Sinatra::Base
     haml :archive
   end
   
-  get '/posts/new' do
+  get '/posts/new/?' do
     ensure_authenticated
     # show a new form
     haml :new
@@ -198,14 +123,45 @@ class Blog < Sinatra::Base
     ensure_authenticated
     # create a new post
     @post_content = PostType.auto_detect(params[:post])
-    @post_content.save
-    redirect '/posts'
+    @post = @post_content.save
+    redirect @post.path
   end
   
   get '/posts/:id/?' do
     # show the post for that id (or it could be a slug)
     @post = Post.get(params[:id])
-    @post = Post.first(:slug => params[:id]) if @post.blank?
+    haml :show
+  end
+  
+  get %r{^/([0-9]{4})/?$} do |year|
+    @posts = Post.all({
+      :created_at_year.gte => year.to_i, 
+      :created_at_year.lt => year.to_i+1,
+      :order => [:created_at.desc]
+    })
+    haml :home
+  end
+  
+  get %r{^/([0-9]{4})/([0-9]{2})/?$} do |year, month|
+    @posts = Post.all({
+      :created_at_year.gte => year.to_i, 
+      :created_at_year.lt => year.to_i+1,
+      :created_at_month.gte => month.to_i,
+      :created_at_month.lt => month.to_i+1,
+      :order => [:created_at.desc]
+    })
+    haml :home
+  end
+  
+  get %r{^/([0-9]{4})/([0-9]{2})/(.+)/?$} do |year, month, slug|
+    @post = Post.first({
+      :created_at_year.gte => year.to_i, 
+      :created_at_year.lt => year.to_i+1,
+      :created_at_month.gte => month.to_i,
+      :created_at_month.lt => month.to_i+1,
+      :slug => slug,
+      :order => [:created_at.desc]
+    })
     haml :show
   end
   
@@ -213,7 +169,6 @@ class Blog < Sinatra::Base
     ensure_authenticated
     # show an edit form
     @post = Post.get(params[:id])
-    @post = Post.first(:slug => params[:id]) if @post.blank?
     haml :edit
   end
   
@@ -226,7 +181,7 @@ class Blog < Sinatra::Base
     # update the post for that id
     @post = Post.get(params[:id])
     @post.update_content!(params[:post])
-    redirect '/posts'
+    redirect @post.path
   end
   
   delete '/posts/:id/?' do
@@ -234,7 +189,7 @@ class Blog < Sinatra::Base
     # remove the post for that id
     @post = Post.get(params[:id])
     @post.destroy
-    redirect '/posts'
+    redirect '/'
   end
   
   get '/feed/?' do
@@ -254,7 +209,7 @@ class Blog < Sinatra::Base
   
   post '/contact/?' do
     Pony.mail({
-      :to => 'myobie@mac.com', 
+      :to => 'me@nathanherald.com', 
       :from => 'contact@nathanherald.com', 
       :subject => 'Contact From from nathanherald.com', 
       :body => [params[:name], params[:email], params[:message]].join("\n\n")

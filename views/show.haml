@@ -1,2 +1,3 @@
 .post{:class=>@post.object_class.downcase}
-  = render_post @post
+  .date= relative_time @post.created_at
+  .post-content= render_post @post

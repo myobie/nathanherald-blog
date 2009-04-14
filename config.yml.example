@@ -1,0 +1,4 @@
+:database: "sqlite3:///./blog.db"
+:domain: domain.com
+:username: admin
+:password: pass
