@@ -3,6 +3,7 @@
 :max_posts_per_month: 10
 :username: admin
 :password: pass
+:dreamhost: true
 :production_gems_path: "/home/domain/.gems"
 :mail:
   :to: someone@someone.com
