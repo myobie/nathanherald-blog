@@ -12,24 +12,26 @@ end
 
 AppConfig.load "config"
 
-if ENV['RACK_ENV'] == 'production'
-  ENV['GEM_PATH'] = AppConfig[:production_gems_path]
+if ENV['RACK_ENV'] == 'production' && AppConfig[:dreamhost]
+  require 'dreamhost'
 end
 
-require "rubygems"
+require 'rubygems'
+gem "sinatra"
 require "sinatra/base"
 gem "nakajima-rack-flash"
 require "rack-flash"
+gem "haml"
 require "haml"
+gem "pony"
 require 'pony'
+gem "extlib"
 require 'extlib'
 gem "myobie-turbine-core"
 # gem "turbine-core"
 require "turbine-core"
 
 PostType.preferred_order = [Video, Audio, Photo, Chat, Review, Quote, Link, Article]
-
-
 
 require 'model' # can only be required after the config is loaded
 
