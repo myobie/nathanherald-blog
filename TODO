@@ -1,6 +1,15 @@
-* to_s on a PostType needs to also be able to do to_s(:full) to show all fields (including slug)
+--- turbine-core things
+* to_s on a PostType needs to show all fields (including slug)
+* to_json needs to be implimented
+* to_yaml as well
+* to_html needs to be added to PostType
+  - needs a haml helper to render from a string of haml
+  - use the indents on String
+  - make an html_for :field {} class method to create the haml strings
+  
+--- Blog things
 * Ratings need stars
 * Quotes needs the fancy quote marks
 * Textmate bundle to post
 * Textmate bundle to pull down id's and have links to edit
-* Feed description should probly just render the partial for the post type
+* Feed description should probly just call to_html on the content object

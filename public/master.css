@@ -96,6 +96,14 @@ p.slogan {
   font-size: 10px;
 }
 
+.post .date a {
+  text-decoration: none;
+}
+
+.post .date a:hover {
+  text-decoration: underline;
+}
+
 p {
   margin: 0 0 1em;
   padding: 0;
@@ -109,11 +117,11 @@ h2 {
 
 a {
   color: #666;
-  text-decoration: none;
+  text-decoration: underline;
 }
 
 a:hover {
-  text-decoration: underline;
+  text-decoration: none;
 }
 
 blockquote {
@@ -129,6 +137,14 @@ blockquote p:before {
 p.more {
   margin: 1.5em 0 1.5em 10px;
   font-weight: bold;
+}
+
+p.more a {
+  text-decoration: none;
+}
+
+p.more a:hover {
+  text-decoration: underline;
 }
 
 p.more a span {
