@@ -1,1 +1,6 @@
-* Tests with rack-text-request thingie?
+* to_s on a PostType needs to also be able to do to_s(:full) to show all fields (including slug)
+* Ratings need stars
+* Quotes needs the fancy quote marks
+* Textmate bundle to post
+* Textmate bundle to pull down id's and have links to edit
+* Feed description should probly just render the partial for the post type
