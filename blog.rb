@@ -128,9 +128,8 @@ class Blog < Sinatra::Base
   ### Routes
   
   get '/' do
-    # show the homepage, maybe the five newest or something
     DataMapper.repository do
-      @posts = Post.all :limit => 5, :order => [:created_at.desc]
+      @posts = Post.all :limit => (AppConfig[:home_posts_count] || 5), :order => [:created_at.desc]
       body haml(:home)
     end#repository
   end#get
