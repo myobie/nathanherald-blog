@@ -44,7 +44,7 @@ end
 
 # Our Sinatra App
 class Blog < Sinatra::Base
-  enable :methodoverride, :static, :sessions
+  enable :methodoverride, :static, :sessions, :logging
   set :haml, { :format => :html5 }
   set :logging, Proc.new { ! test? }
   set :app_file, __FILE__
