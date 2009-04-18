@@ -25,6 +25,9 @@
             %form{:action=>"/search"}
               %label{:for=>"q"} Search
               %input{:type=>"search", :name=>"q", :id=>"q"}
+          - if logged_in?
+            %li.new-post
+              %a{:href=>"/posts/new"} New Post
       
       %h1 Nathan Herald
       %p.slogan I am a designer, husband, and nerd.

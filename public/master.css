@@ -86,7 +86,7 @@ p.slogan {
   position: relative;
 }
 
-.post .date {
+.post .meta {
   position: absolute;
   width: 70px;
   left: -80px;
@@ -96,11 +96,11 @@ p.slogan {
   font-size: 10px;
 }
 
-.post .date a {
+.post .meta a {
   text-decoration: none;
 }
 
-.post .date a:hover {
+.post .meta a:hover {
   text-decoration: underline;
 }
 
@@ -248,4 +248,22 @@ p.more a span {
 
 #footer a {
   color: #eee;
+}
+
+/* Admin */
+
+#nav ul li.new-post a {
+  color: greenyellow;
+}
+
+#nav ul li.new-post a:hover {
+  background: greenyellow;
+  color: #333;
+}
+
+form.post textarea {
+  width: 33em;
+  height: 20em;
+  padding: 4px;
+  font: 13px "Panic Sans", "Courier New", Courier, mono;
 }

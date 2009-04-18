@@ -89,7 +89,7 @@ class Blog < Sinatra::Base
   end#months
   
   def years
-    @years ||= (oldest_post.created_at_year..Time.now.year).to_a
+    @years ||= oldest_post ? (oldest_post.created_at_year..Time.now.year).to_a : []
   end
   
   def perc_of_month(amount)
@@ -171,6 +171,11 @@ class Blog < Sinatra::Base
       :order => [:created_at.desc]
     })
     haml :show
+  end
+  
+  get '/login/?' do
+    ensure_authenticated
+    redirect '/'
   end
   
   get '/posts/new/?' do

@@ -1,4 +1,8 @@
 .post{:class=>post.object_class.downcase}
-  .date
-    %a{:href=>post.path}= post.created_at.strftime("%e %b")
+  .meta
+    .date
+      %a{:href=>post.path}= post.created_at.strftime("%e %b")
+    - if logged_in?
+      .edit
+        %a{:href=>"/posts/#{post.id}/edit"} edit
   .post-content= render_post post
