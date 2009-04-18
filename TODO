@@ -8,10 +8,7 @@
   - make an html_for :field {} class method to create the haml strings
   
 --- Blog things
-* Make homepage amount of posts a AppConfig option
 * Use gem versions
-* Make it log correctly
-* Fix relative time, the last else doesn't need to look at the amount of days
 * Ratings need stars
 * Quotes needs the fancy quote marks
 * Textmate bundle to post
