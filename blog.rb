@@ -35,13 +35,6 @@ PostType.preferred_order = [Video, Audio, Photo, Chat, Review, Quote, Link, Arti
 
 require 'model' # can only be required after the config is loaded
 
-# Extend String so we can keep our haml indented properly
-class String
-  def indents
-    reject { |line| line.blank? }.join.margin # clear blank lines and then clear left margin
-  end
-end
-
 # Our Sinatra App
 class Blog < Sinatra::Base
   enable :methodoverride, :static, :sessions, :logging
