@@ -155,10 +155,14 @@ p.more a span {
 
 /* PostTypes */
 
-.chat ol {
+.chat .post-content ol {
   list-style-type: none;
   margin: 0 0 1em;
   padding: 0;
+}
+
+.photo .post-content img {
+  border: 4px solid #f4f4f4;
 }
 
 /* Sidebar */
