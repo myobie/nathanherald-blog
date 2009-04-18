@@ -68,7 +68,7 @@ class Blog < Sinatra::Base
     elsif days_ago == 1
       "yesterday"
     else
-      "#{days_ago} day#{'s' if days_ago != 1} ago"
+      "#{days_ago} days ago"
     end
   end
   
