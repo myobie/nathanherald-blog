@@ -27,8 +27,8 @@ gem "pony"
 require 'pony'
 gem "extlib"
 require 'extlib'
-gem "myobie-turbine-core"
-# gem "turbine-core"
+# gem "myobie-turbine-core"
+gem "turbine-core"
 require "turbine-core"
 
 PostType.preferred_order = [Video, Audio, Photo, Chat, Review, Quote, Link, Article]
@@ -66,7 +66,8 @@ class Blog < Sinatra::Base
   end
   
   def render_post(post)
-    partial post.object_class.downcase.to_sym, :locals => { :post => post }
+    # partial post.object_class.downcase.to_sym, :locals => { :post => post }
+    post.content_object.to_html
   end
   
   def oldest_post
