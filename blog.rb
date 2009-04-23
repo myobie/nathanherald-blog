@@ -27,8 +27,8 @@ gem "pony"
 require 'pony'
 gem "extlib"
 require 'extlib'
-# gem "myobie-turbine-core"
-gem "turbine-core"
+gem "myobie-turbine-core"
+# gem "turbine-core"
 require "turbine-core"
 
 PostType.preferred_order = [Video, Audio, Photo, Chat, Review, Quote, Link, Article]

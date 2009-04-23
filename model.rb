@@ -66,7 +66,7 @@ class Post
   end
   
   def description
-    Markdown.new(content_object.to_s).to_html
+    content_object.to_html
   end
   
   def g(attr_name)
