@@ -82,9 +82,9 @@ class Post
   end
   
   before :save do
-    self.slug = content_object.get_attr(:slug)
-    self.status = content_object.get_attr(:status)
-    self.object_class = content_object.get_attr(:type)
+    self.slug = content_object.get_attr(:slug) unless content_object.blank_attr?(:slug)
+    self.status = content_object.get_attr(:status) unless content_object.blank_attr?(:status)
+    self.object_class = content_object.get_attr(:type) unless content_object.blank_attr?(:type)
     self.content = content_object.content
   end
   
