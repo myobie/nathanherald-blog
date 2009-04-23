@@ -82,15 +82,35 @@ class Post
   end
   
   before :save do
-    self.slug = content_object.get_attr(:slug) unless content_object.blank_attr?(:slug)
-    self.status = content_object.get_attr(:status) unless content_object.blank_attr?(:status)
-    self.object_class = content_object.get_attr(:type) unless content_object.blank_attr?(:type)
+    unless content_object.blank_attr?(:slug)
+      self.slug = content_object.get_attr(:slug)
+    else
+      content_object.set_attr(:slug, slug)
+    end
+    
+    unless content_object.blank_attr?(:status)
+      self.status = content_object.get_attr(:status)
+    else
+      content_object.set_attr(:status, status)
+    end
+    
+    unless content_object.blank_attr?(:type)
+      self.object_class = content_object.get_attr(:type)
+    else
+      content_object.set_attr(:type, object_class)
+    end
+    
     self.content = content_object.content
   end
   
   before :create do
     self.created_at_month = Time.now.month
     self.created_at_year  = Time.now.year
+  end
+  
+  after :create do
+    self.content[:ref] = id
+    save
   end
   
   def update_content!(new_content_object)
@@ -119,7 +139,12 @@ end
 # Tell PostType how to save to the db
 class PostType
   def send_to_storage
-    p = Post.new
+    if get_attr?(:ref)
+      p = Post.find get_attr(:ref)
+    else
+      p = Post.new
+    end
+    
     p.update_content! self
     p
   end
