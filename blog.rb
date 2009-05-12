@@ -33,6 +33,25 @@ require "turbine-core"
 
 PostType.preferred_order = [Video, Audio, Photo, Chat, Review, Quote, Link, Article]
 
+# TODO: move these changes into turbine-core
+class Review
+  html do
+    haml %Q{
+      %h2
+        - if get_attr?(:url)
+          %a{:href=>get_attr(:url)}= get_attr(:item)
+        - else
+          = get_attr(:item)
+
+      %p.rating
+        Rating:
+        %span= get_attr(:rating)
+
+      ~ get_attr(:description)
+    }.indents(true)
+  end
+end
+
 require 'model' # can only be required after the config is loaded
 
 # Our Sinatra App
