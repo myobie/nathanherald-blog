@@ -126,13 +126,16 @@ a:hover {
 
 blockquote {
   margin: 0;
-  padding: 0;
+  padding: 0 0 0 10px;
+  border-left: 4px solid #eee;
 }
 
+/*
 blockquote p:before {
   content: "> ";
   display: inline;
 }
+*/
 
 p.more {
   margin: 1.5em 0 1.5em 10px;
