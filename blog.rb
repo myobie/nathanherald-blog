@@ -97,7 +97,7 @@ class Blog < Sinatra::Base
     @months ||= years.map { |year| 
       s = year == oldest_post.created_at_year ? oldest_post.created_at_month : 1
       e = year == Time.now.year ? Time.now.month : 12
-      (s..e).to_a.map { |month| [month, year] }
+      (s..e).to_a.reverse.map { |month| [month, year] }
     }.inject([]) { |sum, year| sum + year }
   end#months
   
