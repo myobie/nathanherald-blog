@@ -57,8 +57,10 @@ require 'model' # can only be required after the config is loaded
 # Our Sinatra App
 class Blog < Sinatra::Base
   enable :methodoverride, :static, :sessions, :logging
+  # log = File.new("sinatra.log", "a")
+  # STDOUT.reopen(log)
+  # STDERR.reopen(log)
   set :haml, { :format => :html5 }
-  set :logging, Proc.new { ! test? }
   set :app_file, __FILE__
   set :reload, Proc.new { development? }
   alias_method :h, :escape_html
